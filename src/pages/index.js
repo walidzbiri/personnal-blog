@@ -36,7 +36,7 @@ const Hero = () => {
             max-width: ${rhythm(15)};
           `}
         >
-          Your blog says the things you want to say.
+          A blog is only as interesting as the interest shown in others.
         </h1>
       </Container>
       <div

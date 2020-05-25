@@ -7,15 +7,15 @@ export default () => {
   const theme = useTheme()
   return (
     <React.Fragment>
-      <Link to="#" activeClassName="active" aria-label="View blog page">
+      <Link to="/" activeClassName="active" aria-label="View blog page">
         Blog
       </Link>
-      <Link to="#" activeClassName="active" aria-label="View blog page">
+      <Link to="https://gracious-easley-b90e67.netlify.app/" activeClassName="active" aria-label="View blog page">
         About
       </Link>
-      <Link to="#" activeClassName="active" aria-label="View blog page">
+      {/* <Link to="#" activeClassName="active" aria-label="View blog page">
         Contact
-      </Link>
+      </Link> */}
 
       <ThemeToggler
         css={{}}
