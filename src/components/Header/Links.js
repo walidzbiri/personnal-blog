@@ -10,9 +10,10 @@ export default () => {
       <Link to="/" activeClassName="active" aria-label="View blog page">
         Blog
       </Link>
-      <Link to="https://gracious-easley-b90e67.netlify.app/" activeClassName="active" aria-label="View blog page">
+      <a href="https://gracious-easley-b90e67.netlify.app/">About Me</a>
+      {/* <Link to="https://gracious-easley-b90e67.netlify.app/" activeClassName="active" aria-label="View blog page">
         About
-      </Link>
+      </Link> */}
       {/* <Link to="#" activeClassName="active" aria-label="View blog page">
         Contact
       </Link> */}
