@@ -1,0 +1,120 @@
+---
+slug: chocolatey
+date: 2020-06-01
+title: 'Using chocolatey as your windows package manager'
+description: 'Chocolatey is software management automation for Windows that wraps installers, executables, zips, and scripts into compiled packages.'
+published: true
+author: 'ZBIRI Walid'
+banner: './choco.png'
+---
+# Table of contents
+1. [Introduction](#introduction)
+2. [What is chocolatey ?](#paragraph1)
+3. [How to install Chocolatey ?](#paragraph2)
+4. [Daily usage of chocolatey](#paragraph3)
+4. [Please be safe!](#paragraph4)
+6. [Summary](#paragraph5)
+
+# Introduction <a name="introduction"></a>
+Hello windows users, in this article I will present a powerfull tool
+that every one of us should use, it's **Chocolatey** package manager.
+We know that linux users use APT, MAC users use BREW, so we should use ours. We will see the benifits of _chocolatey_, how to install it on your windows machine
+, how to use it on your daily life. So please enjoy reading !
+
+# What is chocolatey ? <a name="#paragraph1"></a>
+Chocolatey is a package manager for Windows that builds on top of existing Windows technologies, using NuGet for packaging.
+ A package manager, for those not familiar, is a way to get software into your machine without much work on your part. It is the Windows equivalent of yum, apt-get for Linux or brew for Mac OS.  
+Chocolatey helps you downloading applications from their official repositories and then installs, upgrades and configures them smoothly on your machine.
+The real power of Chocolatey package manager is not in installing packages, it is really in the ability to keep them up to date.
+For example, if you want to upgrade some software on your machine due to security reasons, you can do it easily as we’ll see in this article.
+
+# How to install Chocolatey ? <a name="#paragraph2"></a>
+First of all please open your powershell as admin, then execute these following commands
+
+```sh
+# Get-ExecutionPolicy
+```
+If it returns Restricted then run:
+
+```sh
+# Set-ExecutionPolicy AllSigned
+```
+Let's run the installation command, copy and paste it in your powershell:
+```sh
+# Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; iex ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1'))
+```
+Restart powershell and verify installation:
+```sh
+# choco -? 
+```
+If you want more details about installation, please visit their official [Installation Guide](https://chocolatey.org/install).  
+Now let's play with some commands.
+
+# Daily usage of chocolatey <a name="#paragraph3"></a>
+![Choco](./choco2.png)
+Now that you have chocolatey installed on your machine you can run commands.  
+Let’s say we want to install _notepad++_
+
+1- Open your CMD as admin.  
+2- We’ll search for notepad++ package:  
+```sh
+# choco search notepadplusplus
+```
+3- If you want to get more info about the package:
+```sh
+# choco info notepadplusplus
+```
+4- After finding it and getting info, let’s install it down:
+```sh
+# choco install notepadplusplus
+```
+> To play with choco commands, you need to be logged as Admin!  
+
+5- Now you can enjoy using your notepadplusplus software.  
+6- If you want to list your local installed packages:
+```sh
+# choco list -lo
+```
+7- For listing your local outdated packages:
+```sh
+# choco outdated
+```
+8- Upgrading a specific package:
+```sh
+# choco upgrade notepadplusplus
+```
+9-	Upgrading all installed packages:
+```sh
+# choco upgrade all
+```
+10-	Removing some package:
+```sh
+# choco uninstall notepadplusplus
+```
+And boom it's gone!
+
+# Please be safe! <a name="#paragraph4"></a>
+![Safe](./safe.jpg)
+Managing software automatically can be harmful if not performed in proper way.
+So it would be smarter to run a test to take a look on what would have happened, the chocolatey has some parameters to do that.
+
+
+### Using whatif flag:  
+Each choco command has a switch called -whatif. If it is used with a choco command, Chocolatey won't actually perform the action but inform you what would have happened.
+```sh
+# choco upgrade all -whatif
+
+Chocolatey v0.10.15
+_ Chocolatey:ChocolateyUpgradeCommand - Noop Mode _
+chocolatey v0.10.15 is the latest version available based on your source(s).
+chocolatey-core.extension v1.3.5.1 is the latest version available based on your source(s).
+notepadplusplus.install v7.8.6 is the latest version available based on your source(s).
+
+Chocolatey can upgrade 0/3 packages.
+ See the log for details (C:\ProgramData\chocolatey\logs\chocolatey.log).
+```
+# Summary <a name="#paragraph5"></a>
+You learned, at a high level, what Chocolatey is, how to set it up and how to the most commonly used commands to get started managing software via packages on Windows.  
+Let's all sweeten our life with **_choco_**.
+### Useful resources:
+1. [Chocolatey official documentation](https://chocolatey.org/docs/)
