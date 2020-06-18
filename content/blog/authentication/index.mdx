@@ -1,0 +1,137 @@
+---
+slug: authentication
+date: 2020-06-21
+title: 'Everything you should know about authentication'
+description: 'How authentication work in web applications ?'
+published: true
+author: 'ZBIRI Walid'
+banner: './authenvsauthori.jpeg'
+---
+# Table of contents
+1. [Introduction](#introduction)
+2. [Authentication VS Authorization](#paragraph1)
+3. [Stateless VS Stateful Authentication](#paragraph2)  
+    3.1 [Stateful authentication](#paragraph2.1)  
+        	&nbsp; 	&nbsp; 3.1.1 [Stateful authentication features](#paragraph2.1.1)  
+            &nbsp; 	&nbsp; 3.1.2 [What is a cookie](#paragraph2.1.2)  
+    3.2 [Stateless authentication](#paragraph3)  
+            &nbsp; 	&nbsp; 3.2.1 [Stateful authentication features](#paragraph3.1)   
+            &nbsp; 	&nbsp; 3.2.2 [Using JWT standard in stateless authentication](#paragraph3.2)  
+            &nbsp; 	&nbsp; 3.2.3 [Where to Store token on the client-side?](#paragraph3.3)
+4. [Sessions vs. JWT](#paragraph4)  
+    4.1 [Sessions with cookies](#paragraph4.1)  
+    4.2 [JWT Auth](#paragraph4.2)
+5. [Wrap up](#paragraph5)
+
+# Introduction <a name="introduction"></a>
+In this blog, we will cover the fundamentals of user authentication in modern web applications and websites.
+We will explore stateful (session-based) and stateless (token-based) auth, and examine cookies, JWT, and client storage. We will also touch on security aspects with each authentication scheme and lay out practical strategies for implementing authentication in single-page apps and RESTful APIs.
+
+
+# Authentication VS Authorization <a name="paragraph1"></a>
+![auth](./authenvsauthori.jpeg) 
+Nowadays many developers are still confused about those two technical keywords and do not get the difference between them.
+
+**Authentication:** is the process of verifying the identity of a user in your web application. So, it’s essentially determining who the user actually is. It answers the question: _Who are you?_
+
+
+**Authorization:** is the process of verifying user permissions, which means what a user is able and not able to do in your app. It answers the question: _What can you do?_
+
+
+# Stateless VS Stateful Authentication <a name="paragraph2"></a>
+![statefulVSstateless](./state.png) 
+
+Well in the context of username/password scheme which is the most used scheme in modern webapps. We can distinguish between stateful (storing session_id in a cookie) and stateless (token using JWT/OAuth with cookie) authentication.
+# Stateful authentication: <a name="paragraph2.1"></a>
+It’s called stateful because sessions are stored in the server-side. Let’s see the authentication flow in this case:
+- User submits login credentials, e.g. username & password
+- Server verifies the credentials from the DB
+- Server creates a temporary user session
+- Sever issues a cookie with a session ID
+- User sends the cookie with each request
+- Server validates it against the session store & grants access
+- When user logs out, server destroys the session & clears the cookie
+## 1- Stateful authentication features: <a name="paragraph2.1.1"></a>
+- Every user session is stored server-side (stateful) it could be in:
+    - memory (e.g. file system)
+    - cache (e.g. Redis or Memcached) which is the best option
+    - DB (e.g. Postgres, MySQL)
+- Each user is identified by a session ID: no 3rd party script can extract data out using this ID. Only the issuer (in our case: the server) can map back to data using session ID.
+- The Session ID is stored in a secret cookie, signed with a secret key. So that only the server can decrypt that cookie. 
+## 2- What is a cookie: <a name="paragraph2.1.2"></a>
+![cookie](./cookie.png)
+
+A _Cookie_ is just a http request header sent by the client to the server. It is used in session-based authentication. It consists of NAME, VALUE, FLAGS/ATTRIBUTES(Optional).
+
+The server set the cookie on the client browser via _Set-Cookie_ response header.
+
+The example above shows a http response sent by the server.
+
+```sh
+HTTP/1.1 200 OK
+Content-type: text/html
+Set-Cookie: SESS_ID=8bKnWqiZvuvYsIV1zmzJQeYUgINqXYeS; Domain=example.com; Path=/
+```
+# Stateless authentication <a name="paragraph3"></a>
+
+It’s called stateless because the server doesn’t store the user token,sever needs to maintain no state everything is stored on the client side.
+
+Let’s see the authentication flow in a stateless way:
+- User submits login credentials, e.g. username & password
+- Server verifies the credentials against the DB
+- Sever generates a temporary token and embeds user data into it
+- Server responds back with the token (in response body or header)
+- User stores the token in client storage
+- User sends the token along with each request
+- Server verifies the token & grants access
+- When user logs out, token is cleared from client storage
+## 1- Stateful authentication features: <a name="paragraph3.1"></a>
+- Tokens are not stored server-side, only on the client (stateless)
+- Signed with a secret against tampering that could be verified and trusted by the server
+- Typically sent in Authorization request header
+- When a token is about to expire, it can be refreshed
+## 2- Using JWT standard in stateless authentication: <a name="paragraph3.2"></a>
+``JSON Web Token`` (JWT) is an open standard that defines way for securely transmitting information between parties as a JSON object. This information can be verified and trusted because it is digitally signed.
+
+Once the user is logged in, each subsequent request will include the JWT, allowing the user to access routes, services, and resources that are permitted with that token. JSON Web Tokens consist of three parts separated by dots ```( . )``` , which are `Header, Payload, Signature`.
+
+This is an example of a http request that has the Authorization Header that will be verified by the server:
+
+```
+HTTP/1.1 200 OK
+Content-type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI1YmQ2MWFhMWJiNDNmNzI0M2EyOTMxNmQiLCJuYW1lIjoiSm9obiBTbWl0aCIsImlhdCI6MTU0MTI3NjA2MH0.WDKey8WGO6LENkHWJRy8S0QOCbdGwFFoH5XCAR49g4k
+```
+For more info about ``JWT`` visit: https://jwt.io/
+
+## 3- Where to Store token on the client-side? <a name="paragraph3.3"></a>
+JWT can be stored in localStorage which has no expiration time.<br/>Browser key-value store which you can use via a simple JavaScript API.
+
+| Pros      | Cons |
+| ----------- | ----------- |
+| Domain-specific, each site has its own, other sites can't read/write it.      | The localStorage cons are all about security. Frist of all localStorage store plaintext permanently unless removed explicitly via JS API. It’s accessible to any JS code running on the page (incl. XSS) so scripts can steal tokens or impersonate users.       |
+
+
+# Sessions vs JWT <a name="paragraph4"></a>
+## 1- Sessions with cookies <a name="paragraph4.1"></a>
+
+| Pros      | Cons |
+| ----------- | ----------- |
+| Session IDs are opaque and carry no meaningful data| Server must store each user session in memory       |
+| Cookies can be secured with flags (same origin, HTTP-only, HTTPS, etc.) | Session auth must be secured against CSRF |
+| HTTP-only cookies can't be compromised with XSS exploits | Horizontal scaling is more challenging (Need sticky sessions with load balancing)|
+
+## 2- JWT Auth <a name="paragraph4.2"></a>
+
+| Pros      | Cons |
+| ----------- | ----------- |
+| Server does not need to keep track of user sessions | Server still has to maintain a blacklist of revoked tokens|
+| Horizontal scaling is easier (any server can verify the token) | While scaling, the secret must be shared between servers |
+| CORS is not an issue if ``Authorization`` header is used instead of ``Cookie`` | Tokens stored in client storage are vulnerable to ``XSS`` attacker cansteal user info, permissions, metadata and Access website resources on user's behalf|
+
+
+# Wrap up <a name="paragraph5"></a>
+The authentication process can be stateful using i.e ``Cookies``-``Session`` Duo, or stateless i.e using ``JWT``
+### Useful resources:
+1. [JWT Official website](https://jwt.io/)
+2. [100 % stateless with JWT](https://www.youtube.com/watch?v=67mezK3NzpU)
