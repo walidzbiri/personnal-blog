@@ -19,6 +19,9 @@ const getGlobalStyles = theme => {
       background: ${theme.colors.bodyBg};
       color: ${theme.colors.text};
     }
+    table {
+      background-color: ${theme.colors.bodyBg}
+    }
     &::selection {
       color: ${theme.colors.white};
       background-color: ${theme.colors.primary};
